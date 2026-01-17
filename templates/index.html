@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Indicadores Lotofácil</title>
+</head>
+<body>
+    <h1>Números Mais Sorteados na Lotofácil</h1>
+    <table border="1">
+        <tr>
+            <th>Número</th>
+            <th>Frequência</th>
+        </tr>
+        {% for number, freq in numbers %}
+        <tr>
+            <td>{{ number }}</td>
+            <td>{{ freq }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Sequências Consecutivas Mais Repetidas</h2>
+    <table border="1">
+        <tr>
+            <th>Sequência</th>
+            <th>Frequência</th>
+        </tr>
+        {% for seq, freq in sequences %}
+        <tr>
+            <td>{{ seq|join('-') }}</td>
+            <td>{{ freq }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
