@@ -32,5 +32,33 @@
         </tr>
         {% endfor %}
     </table>
+
+    <h2>Co-ocorrências de Sequências</h2>
+    <table border="1">
+        <tr>
+            <th>Sequência 1</th>
+            <th>Sequência 2</th>
+            <th>Co-ocorrências</th>
+        </tr>
+        {% for seq1, seq2, cooc in cooccurrences %}
+        <tr>
+            <td>{{ seq1 }}</td>
+            <td>{{ seq2 }}</td>
+            <td>{{ cooc }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>README</h2>
+    <h3>loto - lucky draws</h3>
+    <h4>Como usar</h4>
+    <ol>
+        <li>Configure as variáveis de ambiente no arquivo <code>.env</code> com as credenciais do banco de dados PostgreSQL.</li>
+        <li>Execute o script <code>main.py</code> para importar os dados do CSV <code>sorteios_lotofacil.csv</code> para a tabela <code>lotofacil</code> no banco de dados.</li>
+        <li>Execute o script <code>populate_sequences.py</code> para criar e popular a tabela de sequências.</li>
+        <li>Para visualizar os indicadores, execute a aplicação web: <code>python app.py</code></li>
+    </ol>
+    <p>Acesse <a href="http://127.0.0.1:5000/">http://127.0.0.1:5000/</a> no navegador para ver os números mais sorteados, sequências repetidas e co-ocorrências de sequências.</p>
+    <p>Certifique-se de que o banco de dados <code>loto</code> existe e que as credenciais estão corretas.</p>
 </body>
 </html>

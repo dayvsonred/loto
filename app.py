@@ -71,11 +71,29 @@ def get_longest_sequences():
     sorted_seq = sorted(seq_count.items(), key=lambda x: x[1], reverse=True)
     return sorted_seq[:20]  # Top 20 sequências
 
+def get_sequence_cooccurrences():
+    conn = psycopg2.connect(DATABASE_URL)
+    cursor = conn.cursor()
+    query = """
+    SELECT s1.seq, s2.seq, COUNT(*) as cooc
+    FROM sequences s1
+    JOIN sequences s2 ON s1.concurso = s2.concurso AND s1.seq < s2.seq
+    GROUP BY s1.seq, s2.seq
+    ORDER BY cooc DESC
+    LIMIT 20;
+    """
+    cursor.execute(query)
+    results = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return results
+
 @app.route('/')
 def index():
     numbers = get_most_frequent_numbers()
     sequences = get_longest_sequences()
-    return render_template('index.html', numbers=numbers, sequences=sequences)
+    cooccurrences = get_sequence_cooccurrences()
+    return render_template('index.html', numbers=numbers, sequences=sequences, cooccurrences=cooccurrences)
 
 if __name__ == '__main__':
     app.run(debug=True)
