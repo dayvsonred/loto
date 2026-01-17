@@ -88,12 +88,45 @@ def get_sequence_cooccurrences():
     conn.close()
     return results
 
+from itertools import combinations
+
+def get_repeated_combinations(k):
+    conn = psycopg2.connect(DATABASE_URL)
+    cursor = conn.cursor()
+    query = "SELECT bola1, bola2, bola3, bola4, bola5, bola6, bola7, bola8, bola9, bola10, bola11, bola12, bola13, bola14, bola15 FROM lotofacil;"
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    from collections import defaultdict
+    combo_count = defaultdict(int)
+    
+    for row in rows:
+        bolas = sorted(row)
+        for combo in combinations(bolas, k):
+            combo_count[combo] += 1
+    
+    # Filtrar apenas >1
+    repeated = {combo: count for combo, count in combo_count.items() if count > 1}
+    # Ordenar por count DESC
+    sorted_repeated = sorted(repeated.items(), key=lambda x: x[1], reverse=True)
+    return sorted_repeated[:10]  # Top 10 por k
+
 @app.route('/')
 def index():
     numbers = get_most_frequent_numbers()
     sequences = get_longest_sequences()
     cooccurrences = get_sequence_cooccurrences()
-    return render_template('index.html', numbers=numbers, sequences=sequences, cooccurrences=cooccurrences)
+    repeated_15 = get_repeated_combinations(15)
+    repeated_14 = get_repeated_combinations(14)
+    repeated_13 = get_repeated_combinations(13)
+    repeated_12 = get_repeated_combinations(12)
+    repeated_11 = get_repeated_combinations(11)
+    repeated_10 = get_repeated_combinations(10)
+    return render_template('index.html', numbers=numbers, sequences=sequences, cooccurrences=cooccurrences,
+                           repeated_15=repeated_15, repeated_14=repeated_14, repeated_13=repeated_13,
+                           repeated_12=repeated_12, repeated_11=repeated_11, repeated_10=repeated_10)
 
 if __name__ == '__main__':
     app.run(debug=True)
