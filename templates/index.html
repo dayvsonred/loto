@@ -6,6 +6,7 @@
 </head>
 <body>
     <h1>Números Mais Sorteados na Lotofácil</h1>
+    <p><a href="/search">Buscar se uma sequência já foi sorteada</a></p>
     <table border="1">
         <tr>
             <th>Número</th>
@@ -54,11 +55,17 @@
         <tr>
             <th>Combinação</th>
             <th>Frequência</th>
+            <th>Concursos e Datas</th>
         </tr>
-        {% for combo, freq in repeated_15 %}
+        {% for combo, freq, details in repeated_15 %}
         <tr>
             <td>{{ combo|join('-') }}</td>
             <td>{{ freq }}</td>
+            <td>
+                {% for concurso, data in details %}
+                {{ concurso }} ({{ data }})<br>
+                {% endfor %}
+            </td>
         </tr>
         {% endfor %}
     </table>
@@ -68,11 +75,17 @@
         <tr>
             <th>Combinação</th>
             <th>Frequência</th>
+            <th>Concursos e Datas</th>
         </tr>
-        {% for combo, freq in repeated_14 %}
+        {% for combo, freq, details in repeated_14 %}
         <tr>
             <td>{{ combo|join('-') }}</td>
             <td>{{ freq }}</td>
+            <td>
+                {% for concurso, data in details %}
+                {{ concurso }} ({{ data }})<br>
+                {% endfor %}
+            </td>
         </tr>
         {% endfor %}
     </table>
@@ -82,11 +95,17 @@
         <tr>
             <th>Combinação</th>
             <th>Frequência</th>
+            <th>Concursos e Datas</th>
         </tr>
-        {% for combo, freq in repeated_13 %}
+        {% for combo, freq, details in repeated_13 %}
         <tr>
             <td>{{ combo|join('-') }}</td>
             <td>{{ freq }}</td>
+            <td>
+                {% for concurso, data in details %}
+                {{ concurso }} ({{ data }})<br>
+                {% endfor %}
+            </td>
         </tr>
         {% endfor %}
     </table>
@@ -96,11 +115,17 @@
         <tr>
             <th>Combinação</th>
             <th>Frequência</th>
+            <th>Concursos e Datas</th>
         </tr>
-        {% for combo, freq in repeated_12 %}
+        {% for combo, freq, details in repeated_12 %}
         <tr>
             <td>{{ combo|join('-') }}</td>
             <td>{{ freq }}</td>
+            <td>
+                {% for concurso, data in details %}
+                {{ concurso }} ({{ data }})<br>
+                {% endfor %}
+            </td>
         </tr>
         {% endfor %}
     </table>
@@ -110,11 +135,17 @@
         <tr>
             <th>Combinação</th>
             <th>Frequência</th>
+            <th>Concursos e Datas</th>
         </tr>
-        {% for combo, freq in repeated_11 %}
+        {% for combo, freq, details in repeated_11 %}
         <tr>
             <td>{{ combo|join('-') }}</td>
             <td>{{ freq }}</td>
+            <td>
+                {% for concurso, data in details %}
+                {{ concurso }} ({{ data }})<br>
+                {% endfor %}
+            </td>
         </tr>
         {% endfor %}
     </table>
@@ -124,11 +155,17 @@
         <tr>
             <th>Combinação</th>
             <th>Frequência</th>
+            <th>Concursos e Datas</th>
         </tr>
-        {% for combo, freq in repeated_10 %}
+        {% for combo, freq, details in repeated_10 %}
         <tr>
             <td>{{ combo|join('-') }}</td>
             <td>{{ freq }}</td>
+            <td>
+                {% for concurso, data in details %}
+                {{ concurso }} ({{ data }})<br>
+                {% endfor %}
+            </td>
         </tr>
         {% endfor %}
     </table>
