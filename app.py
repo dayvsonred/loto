@@ -200,10 +200,10 @@ def fetch_latest():
     cursor = conn.cursor()
     cursor.execute("SELECT MAX(concurso) FROM lotofacil;")
     max_concurso = cursor.fetchone()[0]
-    cursor.close()
-    conn.close()
     
     if max_concurso is None:
+        cursor.close()
+        conn.close()
         return render_template('latest.html', error="Nenhum concurso encontrado na base de dados.")
     
     next_concurso = max_concurso + 1
@@ -212,9 +212,40 @@ def fetch_latest():
     
     if response.status_code == 200:
         data = response.json()
-        dezenas = data.get("dezenasSorteadasOrdemSorteio", [])
-        return render_template('latest.html', concurso=next_concurso, dezenas=dezenas)
+        numero = data.get("numero")
+        data_str = data.get("dataApuracao")
+        lista_dezenas = data.get("listaDezenas", [])
+        
+        if numero and data_str and lista_dezenas:
+            from datetime import datetime
+            data_sorteio = datetime.strptime(data_str, '%d/%m/%Y').date()
+            bolas = [int(d) for d in lista_dezenas]
+            
+            # Insert into lotofacil
+            insert_query = """
+            INSERT INTO lotofacil (concurso, data, bola1, bola2, bola3, bola4, bola5, bola6, bola7, bola8, bola9, bola10, bola11, bola12, bola13, bola14, bola15)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (concurso) DO NOTHING;
+            """
+            cursor.execute(insert_query, (numero, data_sorteio, *bolas))
+            
+            # Clear cached tables
+            cursor.execute("DELETE FROM sequences;")
+            for k in range(10, 16):
+                cursor.execute(f"DELETE FROM repeated_{k};")
+            
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            return render_template('latest.html', concurso=numero, dezenas=lista_dezenas)
+        else:
+            cursor.close()
+            conn.close()
+            return render_template('latest.html', error=f"Dados incompletos para o sorteio {next_concurso}")
     else:
+        cursor.close()
+        conn.close()
         return render_template('latest.html', error=f"sorteio não encontrado numero {next_concurso}")
 
 if __name__ == '__main__':
