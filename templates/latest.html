@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Último Sorteio - Lotofácil</title>
+</head>
+<body>
+    <h1>Buscar Último Sorteio</h1>
+    <a href="/">Voltar à página principal</a>
+    
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% else %}
+    <h2>Sorteio {{ concurso }}</h2>
+    <p>Números sorteados: {{ dezenas|join('-') }}</p>
+    {% endif %}
+</body>
+</html>

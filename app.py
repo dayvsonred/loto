@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import os
 from itertools import combinations
 from collections import defaultdict
+import requests
 
 load_dotenv()
 
@@ -137,6 +138,16 @@ def get_repeated_combinations(k):
         parsed.append((combo, freq, details))
     return parsed
 
+def get_last_draws(n):
+    conn = psycopg2.connect(DATABASE_URL)
+    cursor = conn.cursor()
+    query = "SELECT concurso, data, bola1, bola2, bola3, bola4, bola5, bola6, bola7, bola8, bola9, bola10, bola11, bola12, bola13, bola14, bola15 FROM lotofacil ORDER BY concurso DESC LIMIT %s;"
+    cursor.execute(query, (n,))
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return rows
+
 @app.route('/')
 def index():
     numbers = get_most_frequent_numbers()
@@ -148,9 +159,10 @@ def index():
     repeated_12 = get_repeated_combinations(12)
     repeated_11 = get_repeated_combinations(11)
     repeated_10 = get_repeated_combinations(10)
+    last_draws = get_last_draws(15)
     return render_template('index.html', numbers=numbers, sequences=sequences, cooccurrences=cooccurrences,
                            repeated_15=repeated_15, repeated_14=repeated_14, repeated_13=repeated_13,
-                           repeated_12=repeated_12, repeated_11=repeated_11, repeated_10=repeated_10)
+                           repeated_12=repeated_12, repeated_11=repeated_11, repeated_10=repeated_10, last_draws=last_draws)
 
 @app.route('/search')
 def search():
@@ -181,6 +193,29 @@ def search():
             results.append((concurso, data, sorted(bolas)))
     
     return render_template('search.html', results=results, query=sequence_str)
+
+@app.route('/fetch_latest')
+def fetch_latest():
+    conn = psycopg2.connect(DATABASE_URL)
+    cursor = conn.cursor()
+    cursor.execute("SELECT MAX(concurso) FROM lotofacil;")
+    max_concurso = cursor.fetchone()[0]
+    cursor.close()
+    conn.close()
+    
+    if max_concurso is None:
+        return render_template('latest.html', error="Nenhum concurso encontrado na base de dados.")
+    
+    next_concurso = max_concurso + 1
+    url = f"https://servicebus2.caixa.gov.br/portaldeloterias/api/lotofacil/{next_concurso}"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        data = response.json()
+        dezenas = data.get("dezenasSorteadasOrdemSorteio", [])
+        return render_template('latest.html', concurso=next_concurso, dezenas=dezenas)
+    else:
+        return render_template('latest.html', error=f"sorteio não encontrado numero {next_concurso}")
 
 if __name__ == '__main__':
     app.run(debug=True)

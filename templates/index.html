@@ -5,8 +5,27 @@
     <title>Indicadores Lotofácil</title>
 </head>
 <body>
-    <h1>Números Mais Sorteados na Lotofácil</h1>
+    <h1>Indicadores Lotofácil</h1>
     <p><a href="/search">Buscar se uma sequência já foi sorteada</a></p>
+    <p><a href="/fetch_latest"><button>Buscar Último Sorteio</button></a></p>
+    
+    <h2>Últimos 15 Sorteios</h2>
+    <table border="1">
+        <tr>
+            <th>Concurso</th>
+            <th>Data</th>
+            <th>Números</th>
+        </tr>
+        {% for row in last_draws %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2:]|join('-') }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+    <h2>Números Mais Sorteados na Lotofácil</h2>
     <table border="1">
         <tr>
             <th>Número</th>
